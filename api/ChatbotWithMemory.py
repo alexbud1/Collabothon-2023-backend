@@ -59,19 +59,22 @@ class ChatbotWithHistory:
 
     #a method to get the model's response to some prompt + history 
     def get_response(self, inp: dict):
-        last_prompt_str = inp['new_prompt']['prompt']
-        last_prompt_emb = inp['new_prompt']['vectorized_prompt'] #str of the last prompt
+        last_prompt_str = inp['new_prompt']['prompt'] #str of the last prompt
+        last_prompt_emb = inp['new_prompt']['vectorized_prompt'] #embedding of the last prompt
+        prompt_formatted_str = self.template.format(chat_history=None, human_input=last_prompt_str)
+
 
         #handling an empty database 
         if len(inp['history']) != 0:
             prev_prompts = retreive_hist(inp)
             #running cosine similarity on the entire chat history to retreive the most relevant messages
             n_prompts_answers = cossimhist(last_prompt_emb, vec_dict=prev_prompts)
+
+            prompt_formatted_str = self.template.format(chat_history=n_prompts_answers, human_input=last_prompt_str)
             
-            response = self.chain({
-            "chat_history": n_prompts_answers,
-            "human_input": last_prompt_str})
+            response = self.chain(prompt_formatted_str, last_prompt_str)
         else:
+            prompt_formatted_str = self.template.format(chat_history=last_prompt_str, human_input=last_prompt_str)
             response = self.chain(last_prompt_str)
 
         return response
