@@ -3,18 +3,17 @@
 from pathlib import Path
 import os
 from datetime import timedelta
-
+import environ 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# env = environ.Env()
-# environ.Env.read_env()
+env = environ.Env()
+environ.Env.read_env()
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
-
+# SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = 'django-insecure-8%v!dar$^6c1pp!#-5d0x3tlko86)1wkcy0_m*yw=1$jqgq(q4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

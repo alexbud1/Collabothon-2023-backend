@@ -76,15 +76,15 @@ class ChatbotWithHistory:
 
 
 #executing the file 
-if __name__ == "__main__":
-    chatbot = ChatbotWithHistory()
+# if __name__ == "__main__":
+#     chatbot = ChatbotWithHistory()
 
-    #a continuous 'chat' loop
-    while True:
-        user_message = input("Ty: ")
-        if user_message.lower() in ['exit', 'quit']:
-            break
-        response = chatbot.get_response(user_message)
-        print("Chatbot:", response)
+#     #a continuous 'chat' loop
+#     while True:
+#         user_message = input("Ty: ")
+#         if user_message.lower() in ['exit', 'quit']:
+#             break
+#         response = chatbot.get_response(user_message)
+#         print("Chatbot:", response)
     # response = chatbot.get_response('hey, my name is el. let`s talk')
     # print(response)
