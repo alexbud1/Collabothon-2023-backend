@@ -30,7 +30,7 @@ from .serializers import (
     MoodSerializer,
     MoodWriteSerializer
 )
-from .ChatbotWithMemory import ChatbotWithHistory
+from .ChatbotWithHistory import ChatbotWithHistory
 from .vecdb import Embedder
 from .mongo import get_history, add_answer, add_prompt
 
