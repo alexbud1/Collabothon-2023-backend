@@ -183,6 +183,7 @@ class MessageViewSet(viewsets.ViewSet):
             return Response("message is a required field",status = status.HTTP_400_BAD_REQUEST)
         
         # TO DO -> call ml_model.py here
+        chatbot = ChatbotWithHistory()
         answer = chatbot.get_response(request.data['message'])
         return Response(data={'message': answer}, status=status.HTTP_200_OK)
 
