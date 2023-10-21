@@ -33,6 +33,8 @@ from .serializers import (
 from .ChatbotWithMemory import ChatbotWithHistory
 from .vecdb import Embedder
 from .mongo import get_history, add_answer, add_prompt
+
+
 class SignUpViewSet(viewsets.ViewSet):
     """
     ViewSet which is responsible for a sign up process using credentials
