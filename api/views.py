@@ -41,7 +41,6 @@ class SignUpViewSet(viewsets.ViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
 
-    @transaction.atomic
     @swagger_auto_schema(
         request_body=UserSerializer,  # Use your UserSerializer as the request body
         responses={status.HTTP_201_CREATED: UserSerializer()},
@@ -51,7 +50,6 @@ class SignUpViewSet(viewsets.ViewSet):
         """
         Sign-up route by email and password. 
         User is created as the result.
-        If data isn't acceptable, all changes to the database will be reversed.
         """
         if "email" in request.data and "password" in request.data:
             user_data = {
@@ -62,21 +60,13 @@ class SignUpViewSet(viewsets.ViewSet):
             if len(user_data['password']) < 8 and (not re.match("^[a-zA-Z]+[0-9]+$",user_data['password'])):
                 return Response('Password should contain at least 8 characters with letters and digits', status=status.HTTP_400_BAD_REQUEST)
             
-            savepoint = transaction.savepoint()
-            
             try:
 
-                try:
-                    request.data._mutable = True
-                except:
-                    pass
 
                 user = serializer_create(UserSerializer, data = user_data)
                 request.data['user'] = user['id']
                 
             except Exception as e:
-                print(e)
-                transaction.savepoint_rollback(savepoint)
                 return Response(str(e),  status = status.HTTP_400_BAD_REQUEST)
             
             return Response(data = user,  status = status.HTTP_201_CREATED)
