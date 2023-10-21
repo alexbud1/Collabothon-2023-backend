@@ -14,15 +14,16 @@ dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 API_TOKEN = os.environ.get("APIKEY")
 PROJECT_ID = os.environ.get("PROJECT_ID")
-SYSMSG_CHAT = os.environ.get("SYSMSG")
+SYSMSG_KIDS = os.environ.get("SYSMSG_KIDS")
+SYSMSG_PARENTS = os.environ.get("SYSMSG_PARENTS")
 
 #chatbot class
 class ChatbotWithHistory:
-    def __init__(self):
-        # self.prompt = 'Act as a helpful virtual psychology assistant that provides emotional support and friendly advice to children in a critical situation, situation of stress and trouble. You should provide the user with correct, guiding information. Upon receiving a prompt reply to the user immediately, without augmenting their prompt. DO NOT model a dialogue -- give them time to in turn reply to you. Assume that the prompt the user inputs is complete and there is no need for you to add anything to it. ===PROMPT START=== {userinput} ===PROMPT END===\n'
-        # self.template = 'Act as a helpful virtual psychology assistant that provides emotional support and friendly advice to children in a critical situation, situation of stress and trouble. You should provide the user with correct, guiding information. Upon receiving a prompt reply to the user immediately, without augmenting their prompt. DO NOT model a dialogue -- give them time to in turn reply to you. Assume that the prompt the user inputs is complete and there is no need for you to add anything to it. ===PROMPT START=== {userinput} ===PROMPT END==='
-        
-        self.template = SYSMSG_CHAT
+    def __init__(self, is_for_kids: bool):
+        if is_for_kids:
+            self.template = SYSMSG_KIDS
+        else:
+            self.template = SYSMSG_PARENTS
 
         self.prompt = PromptTemplate(
             input_variables=["chat_history", "human_input"],
@@ -37,6 +38,7 @@ class ChatbotWithHistory:
             GenParams.MAX_NEW_TOKENS: 250,
             GenParams.TEMPERATURE: 0.0,
             GenParams.REPETITION_PENALTY: 1,
+            GenParams.LENGTH_PENALTY: {'decay_factor': 2.5, 'start_index': 150}
         }
 
         #initializing the model 
@@ -65,12 +67,12 @@ class ChatbotWithHistory:
 
 
         #handling an empty database 
-        if len(inp['history']) != 0:
+        if len(inp['history']) > 0:
             prev_prompts = retreive_hist(inp)
             #running cosine similarity on the entire chat history to retreive the most relevant messages
             n_prompts_answers = cossimhist(last_prompt_emb, vec_dict=prev_prompts)
 
-            prompt_formatted_str = self.template.format(chat_history=n_prompts_answers, human_input=last_prompt_str)
+            prompt_formatted_str = self.prompt.format(chat_history=n_prompts_answers, human_input=last_prompt_str)
             
             response = self.chain(prompt_formatted_str, last_prompt_str)
         else:
@@ -78,16 +80,3 @@ class ChatbotWithHistory:
             response = self.chain(last_prompt_str)
 
         return response
-
-#executing the file 
-# if __name__ == "__main__":
-#     chatbot = ChatbotWithHistory()
-#     inp = {'new_prompt': {
-#         'prompt': 'hey, let`s talk',
-#         'vectorized_prompt': None
-#     },
-#     'history': []
-#     }
-
-#     response = chatbot.get_response(inp)
-#     print(response['text'])
