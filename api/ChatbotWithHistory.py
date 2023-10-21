@@ -5,6 +5,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, ConversationChain
 from langchain.memory import ConversationBufferMemory
 import os
+from .translate import Chatbot_translator_EN_to_PL, Chatbot_translator_PL_to_EN
 from os.path import dirname, join 
 from dotenv import load_dotenv
 from .vecdb import cossimhist, retreive_hist 
@@ -58,13 +59,15 @@ class ChatbotWithHistory:
         )
 
         self.chain = LLMChain(llm=self.model.to_langchain(), prompt=self.prompt, verbose=False, memory=self.memory)
+        self.ptoe = Chatbot_translator_PL_to_EN()
+        self.etop = Chatbot_translator_EN_to_PL()
 
     #a method to get the model's response to some prompt + history 
     def get_response(self, inp: dict):
-        last_prompt_str = inp['new_prompt']['prompt'] #str of the last prompt
+        last_prompt_str_pl = inp['new_prompt']['prompt'] #str of the last prompt
+        lps_en = self.ptoe.get_translation_ptoe({'human_input':last_prompt_str_pl})
         last_prompt_emb = inp['new_prompt']['vectorized_prompt'] #embedding of the last prompt
-        prompt_formatted_str = self.template.format(chat_history=None, human_input=last_prompt_str)
-
+        prompt_formatted_str = self.template.format(chat_history=None, human_input=lps_en)
 
         #handling an empty database 
         if len(inp['history']) > 0:
@@ -72,11 +75,13 @@ class ChatbotWithHistory:
             #running cosine similarity on the entire chat history to retreive the most relevant messages
             n_prompts_answers = cossimhist(last_prompt_emb, vec_dict=prev_prompts)
 
-            prompt_formatted_str = self.prompt.format(chat_history=n_prompts_answers, human_input=last_prompt_str)
+            prompt_formatted_str = self.prompt.format(chat_history=n_prompts_answers, human_input=lps_en)
             
-            response = self.chain(prompt_formatted_str, last_prompt_str)
+            response_en = self.chain(prompt_formatted_str, lps_en)
+            response_pl = self.etop.get_translation_etop({'human_input':response_en})
         else:
-            prompt_formatted_str = self.template.format(chat_history=last_prompt_str, human_input=last_prompt_str)
-            response = self.chain(last_prompt_str)
+            prompt_formatted_str = self.template.format(chat_history=lps_en, human_input=lps_en)
+            response_en = self.chain(lps_en)
+            response_pl = self.etop.get_translation_etop({'human_input':response_en})
 
-        return response
+        return response_pl

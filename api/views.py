@@ -171,7 +171,7 @@ class MessageViewSet(viewsets.ViewSet):
             return Response("message is a required field",status = status.HTTP_400_BAD_REQUEST)
         
         # TO DO -> call ml_model.py here
-        chatbot = ChatbotWithHistory()
+        chatbot = ChatbotWithHistory(is_for_kids=False)
         embedder = Embedder()
         participant_id = Participant.objects.get(user=request.user.id).id
         dict_to_send = {
@@ -183,7 +183,7 @@ class MessageViewSet(viewsets.ViewSet):
         }
         print(dict_to_send)
         answer = chatbot.get_response(dict_to_send)
-        answer = answer['text']
+        answer = answer['text'] if type(answer)==dict else answer 
         print(f"Answer: {answer}")
         answer_id = add_answer(participant_id, answer)
         print(f"Answer id: {answer_id}")
