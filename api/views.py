@@ -30,13 +30,9 @@ from .serializers import (
     MoodSerializer,
     MoodWriteSerializer
 )
-# from .ml_model import (
-#     ChatbotWithHistory
-
-# )
-
-# chatbot = ChatbotWithHistory()
-
+from .ChatbotWithMemory import ChatbotWithHistory
+from .vecdb import Embedder
+from .mongo import get_history, add_answer, add_prompt
 class SignUpViewSet(viewsets.ViewSet):
     """
     ViewSet which is responsible for a sign up process using credentials
@@ -183,8 +179,23 @@ class MessageViewSet(viewsets.ViewSet):
             return Response("message is a required field",status = status.HTTP_400_BAD_REQUEST)
         
         # TO DO -> call ml_model.py here
-        # chatbot = ChatbotWithHistory()
-        answer = chatbot.get_response(request.data['message'])
+        chatbot = ChatbotWithHistory()
+        embedder = Embedder()
+        participant_id = Participant.objects.get(user=request.user.id).id
+        dict_to_send = {
+            "new_prompt" : {
+                "prompt" : request.data['message'],
+                "vectorized_prompt" : embedder.get_embedding(request.data['message'])
+            },
+            "history" : get_history(participant_id)
+        }
+        print(dict_to_send)
+        answer = chatbot.get_response(dict_to_send)
+        answer = answer['text']
+        print(f"Answer: {answer}")
+        answer_id = add_answer(participant_id, answer)
+        print(f"Answer id: {answer_id}")
+        add_prompt(participant_id, request.data['message'], embedder.get_embedding(request.data['message']), answer_id)
         return Response(data={'message': answer}, status=status.HTTP_200_OK)
 
 class MoodViewSet(viewsets.ViewSet):
