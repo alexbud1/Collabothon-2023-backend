@@ -171,7 +171,7 @@ class MessageViewSet(viewsets.ViewSet):
             return Response("message is a required field",status = status.HTTP_400_BAD_REQUEST)
         
         # TO DO -> call ml_model.py here
-        chatbot = ChatbotWithHistory(is_for_kids=False)
+        chatbot = ChatbotWithHistory(is_for_kids=True, emotion='HAPPY')
         embedder = Embedder()
         participant_id = Participant.objects.get(user=request.user.id).id
         dict_to_send = {
