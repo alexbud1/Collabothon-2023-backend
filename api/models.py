@@ -21,6 +21,11 @@ MOOD_ANSWERS = [
     (5,5)
 ]
 
+ROLE_CHOICES = [
+    ('parent', 'parent'),
+    ('child', 'child')
+]
+
 class User(AbstractUser):
     email = models.EmailField(verbose_name = 'email address', max_length = 255, unique = True)
     username = None
@@ -38,6 +43,7 @@ class Participant(models.Model):
     last_name = models.CharField(max_length=70, null=False, blank=False)
     age = models.IntegerField(null=False, blank=False)
     phone_number = models.CharField(max_length=70, null=True, blank=True)
+    role = models.CharField(max_length=70, choices=ROLE_CHOICES, null=False, blank=False)
 
     def __str__(self):
         return self.first_name + " " + self.last_name
