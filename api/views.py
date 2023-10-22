@@ -173,9 +173,12 @@ class MessageViewSet(viewsets.ViewSet):
         if "alert_state" not in request.data:
             return Response("alert_state is a required field",status = status.HTTP_400_BAD_REQUEST)
         # TO DO -> call ml_model.py here
-        chatbot = ChatbotWithHistory(is_for_kids=True, emotion='HAPPY')
-        embedder = Embedder()
         participant_id = Participant.objects.get(user=request.user.id).id
+        survey = Survey.objects.get(participant=participant_id)
+        survey_and_answers = f"Jak opisałbyś swój ogólny nastrój dzisiaj?\n\n{survey.question1_answer}\n\nJak opisałbyś swoje relacje z rodziną i przyjaciółmi?\n\n{survey.question2_answer}\n\nJak się czujesz w kwestii swojej wydajności szkolnej lub akademickiej?\n\n{survey.question3_answer}\n\nJakie aktywności lub zainteresowania sprawiają ci przyjemność?\n\n{survey.question4_answer}\n\nJak zazwyczaj radzisz sobie ze stresem lub trudnymi sytuacjami?\n\n{survey.question5_answer}\n\nIle godzin snu zazwyczaj dostajesz w nocy?\n\n{survey.question6_answer}\n\nJak opisałbyś swoje zdrowie fizyczne i ewentualne ostatnie zmiany w nim?\n\n{survey.question7_answer}\n\nIle czasu dziennie spędzasz używając urządzeń elektronicznych?\n\n{survey.question8_answer}\n\nCzy czujesz, że masz system wsparcia, na którym możesz polegać?\n\n{survey.question9_answer}\n\nJakie są twoje cele lub marzenia krótko- i długoterminowe?\n\n{survey.question10_answer}"
+        print(survey_and_answers)
+        chatbot = ChatbotWithHistory(is_for_kids=True, emotion='HAPPY', survey_and_answers=survey_and_answers)
+        embedder = Embedder()
         dict_to_send = {
             "new_prompt" : {
                 "prompt" : request.data['message'],
