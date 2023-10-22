@@ -8,7 +8,7 @@ import numpy as np
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 PINECONE_API = os.environ.get("PINECONE_API")
-OPENAI_API = os.environ.get("OPENAI_API")
+# OPENAI_API = os.environ.get("OPENAI_API")
 
 
 #the database class
