@@ -99,10 +99,10 @@ class PersonalInfoViewSet(viewsets.ViewSet):
         if "first_name" in request.data and "last_name" in request.data and "age" in request.data and "role" in request.data:
             request.data['user'] = request.user.id
             participant = serializer_create(ParticipantWriteSerializer, data = request.data)
-            if request.data['role'] == 'parent':
-                parent = serializer_create(ParentSerializer, data = request.data)
-            elif request.data['role'] == 'child':
-                child = serializer_create(ChildSerializer, data = request.data)
+            # if request.data['role'] == 'parent':
+            #     parent = serializer_create(ParentSerializer, data = request.data)
+            # elif request.data['role'] == 'child':
+            #     child = serializer_create(ChildSerializer, data = request.data)
             return Response(data = participant,  status = status.HTTP_201_CREATED)
         else:
             return Response("first_name, last_name, role and age are required fields",status = status.HTTP_400_BAD_REQUEST)
