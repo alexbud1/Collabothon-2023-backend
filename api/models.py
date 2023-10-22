@@ -79,16 +79,16 @@ class ChatFile(models.Model):
     
 class Survey(models.Model):
     participant = models.OneToOneField(Participant, on_delete=models.CASCADE)
-    question1_answer = models.CharField(max_length=70, choices=SURVEY_ANSWERS, null=False, blank=False)
-    question2_answer = models.CharField(max_length=70, choices=SURVEY_ANSWERS, null=False, blank=False)
-    question3_answer = models.CharField(max_length=70, choices=SURVEY_ANSWERS, null=False, blank=False)
-    question4_answer = models.CharField(max_length=70, choices=SURVEY_ANSWERS, null=False, blank=False)
-    question5_answer = models.CharField(max_length=70, choices=SURVEY_ANSWERS, null=False, blank=False)
-    question6_answer = models.CharField(max_length=70, choices=SURVEY_ANSWERS, null=False, blank=False)
-    question7_answer = models.CharField(max_length=70, choices=SURVEY_ANSWERS, null=False, blank=False)
-    question8_answer = models.CharField(max_length=70, choices=SURVEY_ANSWERS, null=False, blank=False)
-    question9_answer = models.CharField(max_length=70, choices=SURVEY_ANSWERS, null=False, blank=False)
-    question10_answer = models.CharField(max_length=70, choices=SURVEY_ANSWERS, null=False, blank=False)
+    question2_answer = models.CharField(max_length=150, null=False, blank=False)
+    question1_answer = models.CharField(max_length=150, null=False, blank=False)
+    question3_answer = models.CharField(max_length=150, null=False, blank=False)
+    question4_answer = models.CharField(max_length=150, null=False, blank=False)
+    question5_answer = models.CharField(max_length=150, null=False, blank=False)
+    question6_answer = models.CharField(max_length=150, null=False, blank=False)
+    question7_answer = models.CharField(max_length=150, null=False, blank=False)
+    question8_answer = models.CharField(max_length=150, null=False, blank=False)
+    question9_answer = models.CharField(max_length=150, null=False, blank=False)
+    question10_answer = models.CharField(max_length=150, null=False, blank=False)
     """
     There would be stored some kind of answers to the survey
     """
