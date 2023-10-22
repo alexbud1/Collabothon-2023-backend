@@ -12,13 +12,16 @@ from .vecdb import cossimhist, retreive_hist
 # from .translate_deepl import translate_to_pl, translate_to_en
 from .fake_agents import *
 from .survey_analysis import NotesAnalyst
+from langchain.llms import OpenAI
 
 #.env adjustments
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 API_TOKEN = os.environ.get("APIKEY")
+OPENAI_API = os.environ.get("OPENAI_API")
 PROJECT_ID = os.environ.get("PROJECT_ID")
 SYSMSG_PARENTS = os.environ.get("SYSMSG_PARENTS")
+SYSMSG_KIDS = os.environ.get("SYSMSG_KIDS")
 SYSMSG_HAPPY = os.environ.get("SYSMSG_HAPPY")
 SYSMSG_SAD = os.environ.get("SYSMSG_SAD")  
 SYSMSG_ANGRY = os.environ.get("SYSMSG_ANGRY")  
@@ -29,14 +32,15 @@ SYSMSG_SUICIDE = os.environ.get("SYSMSG_SUICIDE")
 class ChatbotWithHistory:
     def __init__(self, is_for_kids: bool, emotion:str, survey_and_answers:str):
         if is_for_kids:
-            if emotion == 'HAPPY':
-                self.template = SYSMSG_HAPPY
-            elif emotion == 'SAD':
-                self.template = SYSMSG_SAD
-            elif emotion == 'ANGRY':
-                self.template = SYSMSG_ANGRY
-            elif emotion == 'FRIENDLY':
-                self.template = SYSMSG_FRIENDLY
+            self.template = SYSMSG_PARENTS
+        #     if emotion == 'HAPPY':
+        #         self.template = SYSMSG_HAPPY
+        #     elif emotion == 'SAD':
+        #         self.template = SYSMSG_SAD
+        #     elif emotion == 'ANGRY':
+        #         self.template = SYSMSG_ANGRY
+        #     elif emotion == 'FRIENDLY':
+        #         self.template = SYSMSG_FRIENDLY
         else:
             self.template = SYSMSG_PARENTS
 
@@ -45,27 +49,27 @@ class ChatbotWithHistory:
             template=self.template
         )
 
-        GenParams().get_example_values()
+        # GenParams().get_example_values()
 
-        #model hyperparameters 
-        self.generate_params = {
-            GenParams.MIN_NEW_TOKENS: 10,
-            GenParams.MAX_NEW_TOKENS: 150,
-            GenParams.TEMPERATURE: 0.0,
-            GenParams.REPETITION_PENALTY: 1,
-            GenParams.LENGTH_PENALTY: {'decay_factor': 2, 'start_index': 90}
-        }
+        # #model hyperparameters 
+        # self.generate_params = {
+        #     GenParams.MIN_NEW_TOKENS: 10,
+        #     GenParams.MAX_NEW_TOKENS: 150,
+        #     GenParams.TEMPERATURE: 0.0,
+        #     GenParams.REPETITION_PENALTY: 1,
+        #     GenParams.LENGTH_PENALTY: {'decay_factor': 2, 'start_index': 90}
+        # }
 
         #initializing the model 
-        self.model = Model(
-            model_id=ModelTypes.LLAMA_2_70B_CHAT,
-            params=self.generate_params,
-            credentials={
-                "apikey": API_TOKEN,  
-                "url": "https://eu-de.ml.cloud.ibm.com"
-            },
-            project_id=PROJECT_ID
-        )
+        # self.model = Model(
+        #     model_id=ModelTypes.LLAMA_2_70B_CHAT,
+        #     params=self.generate_params,
+        #     credentials={
+        #         "apikey": API_TOKEN,  
+        #         "url": "https://eu-de.ml.cloud.ibm.com"
+        #     },
+        #     project_id=PROJECT_ID
+        # )
 
         self.memory = ConversationBufferMemory(
             memory_key='chat_history',
@@ -74,9 +78,11 @@ class ChatbotWithHistory:
 
         self.person_summarizer = NotesAnalyst()
 
+        llm = OpenAI(openai_api_key=OPENAI_API)
         #passed to sysmsg at each step 
         self.person_summary = self.person_summarizer.analyze(survey_and_answers)
-        self.chain = LLMChain(llm=self.model.to_langchain(), prompt=self.prompt, verbose=False, memory=self.memory)
+        # self.chain = LLMChain(llm=self.model.to_langchain(), prompt=self.prompt, verbose=False, memory=self.memory)
+        self.chain = LLMChain(llm=llm, prompt=self.prompt, verbose=False, memory=self.memory)
         self.ptoe = Chatbot_translator_PL_to_EN()
         self.etop = Chatbot_translator_EN_to_PL()
 
@@ -88,7 +94,7 @@ class ChatbotWithHistory:
 
         last_prompt_str_pl = inp['new_prompt']['prompt'] #str of the last prompt
         lps_en = self.ptoe.get_translation_ptoe({'human_input':last_prompt_str_pl})
-        print(lps_en)
+        # print(lps_en)
         # lps_en = translate_to_en(last_prompt_str_pl)
         last_prompt_emb = inp['new_prompt']['vectorized_prompt'] #embedding of the last prompt
         prompt_formatted_str = self.template.format(person_summary=self.person_summary, chat_history=None, human_input=lps_en)
