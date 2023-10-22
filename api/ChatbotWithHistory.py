@@ -9,20 +9,33 @@ from .translate import Chatbot_translator_EN_to_PL, Chatbot_translator_PL_to_EN
 from os.path import dirname, join 
 from dotenv import load_dotenv
 from .vecdb import cossimhist, retreive_hist 
+# from .translate_deepl import translate_to_pl, translate_to_en
+from .fake_agents import *
 
 #.env adjustments
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 API_TOKEN = os.environ.get("APIKEY")
 PROJECT_ID = os.environ.get("PROJECT_ID")
-SYSMSG_KIDS = os.environ.get("SYSMSG_KIDS")
 SYSMSG_PARENTS = os.environ.get("SYSMSG_PARENTS")
+SYSMSG_HAPPY = os.environ.get("SYSMSG_HAPPY")
+SYSMSG_SAD = os.environ.get("SYSMSG_SAD")  
+SYSMSG_ANGRY = os.environ.get("SYSMSG_ANGRY")  
+SYSMSG_FRIENDLY = os.environ.get("SYSMSG_FRIENDLY")  
+
 
 #chatbot class
 class ChatbotWithHistory:
-    def __init__(self, is_for_kids: bool):
+    def __init__(self, is_for_kids: bool, emotion:str):
         if is_for_kids:
-            self.template = SYSMSG_KIDS
+            if emotion == 'HAPPY':
+                self.template = SYSMSG_HAPPY
+            elif emotion == 'SAD':
+                self.template = SYSMSG_SAD
+            elif emotion == 'ANGRY':
+                self.template = SYSMSG_ANGRY
+            elif emotion == 'FRIENDLY':
+                self.template = SYSMSG_FRIENDLY
         else:
             self.template = SYSMSG_PARENTS
 
@@ -36,10 +49,10 @@ class ChatbotWithHistory:
         #model hyperparameters 
         self.generate_params = {
             GenParams.MIN_NEW_TOKENS: 10,
-            GenParams.MAX_NEW_TOKENS: 250,
+            GenParams.MAX_NEW_TOKENS: 150,
             GenParams.TEMPERATURE: 0.0,
             GenParams.REPETITION_PENALTY: 1,
-            GenParams.LENGTH_PENALTY: {'decay_factor': 2.5, 'start_index': 150}
+            GenParams.LENGTH_PENALTY: {'decay_factor': 2, 'start_index': 90}
         }
 
         #initializing the model 
@@ -66,6 +79,8 @@ class ChatbotWithHistory:
     def get_response(self, inp: dict):
         last_prompt_str_pl = inp['new_prompt']['prompt'] #str of the last prompt
         lps_en = self.ptoe.get_translation_ptoe({'human_input':last_prompt_str_pl})
+        print(lps_en)
+        # lps_en = translate_to_en(last_prompt_str_pl)
         last_prompt_emb = inp['new_prompt']['vectorized_prompt'] #embedding of the last prompt
         prompt_formatted_str = self.template.format(chat_history=None, human_input=lps_en)
 
@@ -78,10 +93,16 @@ class ChatbotWithHistory:
             prompt_formatted_str = self.prompt.format(chat_history=n_prompts_answers, human_input=lps_en)
             
             response_en = self.chain(prompt_formatted_str, lps_en)
+            print(response_en)
             response_pl = self.etop.get_translation_etop({'human_input':response_en})
+            print(response_pl)
+            # response_pl = translate_to_pl(response_en)
         else:
             prompt_formatted_str = self.template.format(chat_history=lps_en, human_input=lps_en)
             response_en = self.chain(lps_en)
+            print(response_en)
             response_pl = self.etop.get_translation_etop({'human_input':response_en})
+            print(response_pl)
+            # response_pl = translate_to_pl(response_en)
 
         return response_pl

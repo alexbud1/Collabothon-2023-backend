@@ -183,7 +183,7 @@ class MessageViewSet(viewsets.ViewSet):
         }
         print(dict_to_send)
         answer = chatbot.get_response(dict_to_send)
-        answer = answer['text'] if type(answer)==dict else answer 
+        answer = answer['text'] if type(answer) != str else answer 
         print(f"Answer: {answer}")
         answer_id = add_answer(participant_id, answer)
         print(f"Answer id: {answer_id}")

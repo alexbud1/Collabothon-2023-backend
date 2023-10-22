@@ -21,7 +21,7 @@ class ChatbotWithHistory:
         
         self.generate_params = {
             GenParams.MIN_NEW_TOKENS: 50,
-            GenParams.MAX_NEW_TOKENS: 300,
+            GenParams.MAX_NEW_TOKENS: 200,
             GenParams.TEMPERATURE: 0,
             GenParams.REPETITION_PENALTY: 1,
         }
@@ -48,12 +48,12 @@ class ChatbotWithHistory:
 #upon receiving a prompt
 class Chatbot_translator_PL_to_EN:
     def __init__(self):
-        self.conversation_history1 = 'TRANSLATE THE FOLLOWING INPUT FROM POLISH TO ENGLISHJ. RETURN JUST TRANSLATED MESSAGES. INPUT:  {human_input} OUTPUT: \n'
+        self.conversation_history1 = 'TRANSLATE THE FOLLOWING INPUT FROM POLISH TO ENGLISHJ. RETURN JUST TRANSLATED MESSAGE. INPUT:  {human_input} OUTPUT: \n'
         GenParams().get_example_values()
 
         self.generate_params = {
             GenParams.MIN_NEW_TOKENS: 1,
-            GenParams.MAX_NEW_TOKENS: 300,
+            GenParams.MAX_NEW_TOKENS: 200,
             GenParams.TEMPERATURE: 0,
             GenParams.REPETITION_PENALTY: 1,
         }
@@ -77,7 +77,7 @@ class Chatbot_translator_PL_to_EN:
 #upon receiving model output 
 class Chatbot_translator_EN_to_PL:
     def __init__(self):
-        self.conversation_history2 = 'TRANSLATE THE FOLLOWING INPUT FROM ENGLISH TO POLISH. RETURN JUST TRANSLATED MESSAGES. INPUT:  {human_input} OUTPUT: \n'
+        self.conversation_history2 = 'TRANSLATE THE FOLLOWING INPUT FROM ENGLISH TO POLISH. RETURN JUST TRANSLATED MESSAGE. INPUT:  {human_input} OUTPUT: \n'
         GenParams().get_example_values()
 
         self.generate_params = {
