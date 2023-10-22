@@ -1,0 +1,39 @@
+*Emotional Well-being:*
+   - How would you describe your overall mood today?
+     - Happy
+
+2. *Social and Family Relationships:*
+   - How would you describe your relationship with your family and friends?
+     - Fair
+
+3. *School and Academic Life:*
+   - How do you feel about your school or academic performance?
+     - Very satisfied
+
+4. *Hobbies and Interests:*
+   - What activities or hobbies do you enjoy?
+     - Gaming
+
+5. *Stress and Coping Mechanisms:*
+   - How do you typically cope with stress or difficult situations?
+     - Physical activity
+
+6. *Sleep and Daily Routine:*
+   - How many hours of sleep do you typically get at night?
+     - 6-7 hours
+
+7. *Physical Health:*
+   - How would you describe your physical health and any recent changes in it?
+     - Good
+
+8. *Technology and Screen Time:*
+   - How much time do you spend using electronic devices each day?
+     - 2-4 hours
+
+9. *Social Support:*
+   - Do you feel like you have a support system you can rely on?
+     - Not sure
+
+10. *Goals and Aspirations:*
+    - What are some of your short-term and long-term goals or dreams?
+      - Career advancement
