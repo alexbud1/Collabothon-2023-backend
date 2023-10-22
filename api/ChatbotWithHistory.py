@@ -25,7 +25,6 @@ SYSMSG_FRIENDLY = os.environ.get("SYSMSG_FRIENDLY")
 SYSMSG_SUICIDE = os.environ.get("SYSMSG_SUICIDE")  
 
 
-
 #chatbot class
 class ChatbotWithHistory:
     def __init__(self, is_for_kids: bool, emotion:str):
@@ -82,7 +81,7 @@ class ChatbotWithHistory:
         alert_state = inp['alert_state']
         if alert_state:
             self.template = SYSMSG_SUICIDE
-            
+
         last_prompt_str_pl = inp['new_prompt']['prompt'] #str of the last prompt
         lps_en = self.ptoe.get_translation_ptoe({'human_input':last_prompt_str_pl})
         print(lps_en)
