@@ -24,7 +24,6 @@ SYSMSG_ANGRY = os.environ.get("SYSMSG_ANGRY")
 SYSMSG_FRIENDLY = os.environ.get("SYSMSG_FRIENDLY")  
 SYSMSG_SUICIDE = os.environ.get("SYSMSG_SUICIDE")  
 
-
 #chatbot class
 class ChatbotWithHistory:
     def __init__(self, is_for_kids: bool, emotion:str):

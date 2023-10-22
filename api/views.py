@@ -162,6 +162,7 @@ class MessageViewSet(viewsets.ViewSet):
             type=openapi.TYPE_OBJECT,
             properties={
                 'message': openapi.Schema(type=openapi.TYPE_STRING, description='Message from a bot'),
+                "alert_state": openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Alert state of a bot'),
             },
         )},
         operation_description="Send message to a bot and get response from it.",
@@ -169,7 +170,8 @@ class MessageViewSet(viewsets.ViewSet):
     def create(self, request):
         if "message" not in request.data:
             return Response("message is a required field",status = status.HTTP_400_BAD_REQUEST)
-        
+        if "alert_state" not in request.data:
+            return Response("alert_state is a required field",status = status.HTTP_400_BAD_REQUEST)
         # TO DO -> call ml_model.py here
         chatbot = ChatbotWithHistory(is_for_kids=True, emotion='HAPPY')
         embedder = Embedder()
@@ -179,7 +181,8 @@ class MessageViewSet(viewsets.ViewSet):
                 "prompt" : request.data['message'],
                 "vectorized_prompt" : embedder.get_embedding(request.data['message'])
             },
-            "history" : get_history(participant_id)
+            "history" : get_history(participant_id),
+            "alert_state" : request.data['alert_state']
         }
         print(dict_to_send)
         answer = chatbot.get_response(dict_to_send)
