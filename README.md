@@ -20,3 +20,4 @@ Databases : Postgresql, MongoDB
 
 Other : WatsonX.ai, GCP
 
+## App Architecture
