@@ -7,6 +7,16 @@ The challenge was to create a virtual assistant that helps children and their pa
 
 ## Tech Stack
 Back-end : Python, Django Rest Framework
+
+
 Front-end : HTML, CSS, JavaScript
+
+
 ML : Python, watsonx.ai API, langchain, openai
+
+
+Databases : Postgresql, MongoDB
+
+
+Other : WatsonX.ai, GCP
 
