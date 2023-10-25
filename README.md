@@ -22,4 +22,5 @@ Other : WatsonX.ai, GCP
 
 ## In-app Chat Architecture
 
-![Collabothon2023_back drawio](https://github.com/alexbud1/Collabothon-2023-backend/assets/69623580/c9b4e16a-310e-48cf-a0ac-51bb42c4c404)
+![Collabothon2023_back drawio](https://github.com/alexbud1/Collabothon-2023-backend/assets/69623580/8c595053-0151-48a7-a733-6ac347d5f501)
+
