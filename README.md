@@ -20,4 +20,6 @@ Databases : Postgresql, MongoDB
 
 Other : WatsonX.ai, GCP
 
-## App Architecture
+## In-app Chat Architecture
+
+![Collabothon2023_back drawio](https://github.com/alexbud1/Collabothon-2023-backend/assets/69623580/c9b4e16a-310e-48cf-a0ac-51bb42c4c404)
